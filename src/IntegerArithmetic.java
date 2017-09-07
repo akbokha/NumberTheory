@@ -1,9 +1,4 @@
-package numbers;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
+import java.io.File;
 import java.util.Scanner;
 
 /**
@@ -12,97 +7,93 @@ import java.util.Scanner;
  */
 public class IntegerArithmetic {
 	/**
-	 * The radix used
+	 * If the code is meant for handin
+	 */
+	private static boolean HANDIN = false;
+
+	/**
+	 * The radix of the input
 	 */
 	private static int radix;
-	
+
 	/**
-	 * The operation used
+	 * The type of operation
 	 */
 	private static Operation operation;
-	
+
 	/**
-	 * First value to be used
+	 * Stores the first value of the input
 	 */
-	private static ArrayList<Integer> x;
-	
+	private static int[] x;
+
 	/**
-	 * Second value to be used
+	 * Stores the second value of the input
 	 */
-	private static ArrayList<Integer> y;
-	
+	private static int[] y;
+
 	/**
-	 * Scanner for reading input
+	 * The answer of the calculation
 	 */
-	private static Scanner scanner;
-	
-	
+	private static int[] answer;
+
 	/**
 	 * Main function
 	 * 
 	 * @param args input parameters
 	 */
 	public static void main(String[] args) throws Exception {
-		scanner = new Scanner(System.in);
-		radix = readRadix();
-		if(radix <= 0) {
-			throw new IOException("Radix should be greater than 0");
+		//Storing data and add scanner
+		File file = new File("./resources/example.txt");
+		Scanner scanner;
+		if(HANDIN) {
+			scanner = new Scanner(System.in);
 		} else {
-			System.out.println("Radix: " + radix);
+			scanner = new Scanner(file);
+		}
+
+		while(scanner.hasNextLine()) {
+			String line  = scanner.nextLine();
+			if(line.startsWith("#")) {
+				if(line.startsWith("# [answer]")) {
+					//TODO: Check answer
+				}
+			} else if (line.startsWith("[radix]")) {
+				radix = Integer.parseInt(line.replaceAll("[\\D]", ""));
+			} else if (line.startsWith("[add]")) {
+				operation = Operation.ADD;
+			} else if (line.startsWith("[subtract]")) {
+				operation = Operation.SUBTRACT;
+			} else if (line.startsWith("[multiply]")) {
+				operation = Operation.MULTIPLY;
+			} else if (line.startsWith("[karatsuba]")) {
+				operation = Operation.KARATSUBA;
+			} else if (line.startsWith("[x]")) {
+				x = parseWord(scanner.nextLine());
+			} else if (line.startsWith("[y]")) {
+				y = parseWord(scanner.nextLine());
+				//TODO: Calculate answer
+			}
 		}
 		
-		operation = readOperation(scanner.nextLine());
-		if(operation == null) {
-			throw new IOException("Operation not supported");
-		} else {
-			System.out.println("Operation: " + operation.getStringOperation());
+	}
+
+	/**
+	 * Parses a word into ints
+	 * @param word 		The word to parse
+	 */
+	private static int[] parseWord(String word) {
+		int[] temp = new int[word.length()];
+		for(int i = 0; i < word.length(); i++) {
+			temp[i] = Integer.parseInt(Character.toString(word.charAt(i)));
 		}
-		readIntegers();
-		
-	}
-	
-	/**
-	 * Reads the radix
-	 */
-	public static int readRadix() {
-		return scanner.nextInt();
-	}
-	
-	/**
-	 * Reads the operation
-	 */
-	public static Operation readOperation(String line) throws IOException {
-		return Operation.getOperation(line.replaceAll("[]", "")).get();
-	}
-	
-	/**
-	 * Reads the input integers
-	 */
-	public static void readIntegers() {
-		
+		return temp;
 	}
 	
 	/**
 	 * Different operations
-	 * @author Bart van Helvert
 	 */
 	private enum Operation {
-		ADD("add"), SUBTRACT("subtract"), MULTIPLY("multiply"), KARATSUBA("karatsuba");
-		
-		private String stringOperation;
-		
-		Operation(String operation) {
-			this.stringOperation = operation;
-		}
-		
-		public String getStringOperation() {
-			return stringOperation;
-		}
-		
-		
-		public static Optional<Operation> getOperation(String operation) {
-			return Arrays.stream(Operation.values()).filter(op -> op.getStringOperation().equals(operation)).findAny();
-		}
+		ADD, SUBTRACT, MULTIPLY, KARATSUBA;
 	}
 
 }
