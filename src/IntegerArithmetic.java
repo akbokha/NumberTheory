@@ -8,7 +8,7 @@ import java.lang.Math;
  */
 public class IntegerArithmetic {
 	/**
-	 * If the code is meant for handin
+	 * If the code is meant for hand in of the assignment
 	 */
 	private static boolean HANDIN = false;
 
@@ -25,17 +25,17 @@ public class IntegerArithmetic {
 	/**
 	 * Stores the first value of the input
 	 */
-	private static int[] x;
+	private static IntegerRep x;
 
 	/**
 	 * Stores the second value of the input
 	 */
-	private static int[] y;
+	private static IntegerRep y;
 
 	/**
 	 * The answer of the calculation
 	 */
-	private static int[] answer;
+	private static IntegerRep answer;
 
 	/**
 	 * Main function
@@ -82,87 +82,56 @@ public class IntegerArithmetic {
 				y = parseWord(line.replaceAll("[\\D]", ""));
                                 System.out.println("y (int array): " + y);
 				//TODO: Calculate answer
-                                int[] solutionArray = solve();
-                                String solution = "";
-                                /*System.out.print("Solution: ");
-                                for(int i = 0; i < solutionArray.length; i++){
-                                    System.out.print(solutionArray[i]);
-                                }
-                                System.out.println("");*/
-                                for(int i = 0; i < solutionArray.length; i++){
+                                IntegerRep solutionIntRepresentation = solve();
+                                String solutionString = "";
+                                for(int i = 0; i < solutionIntRepresentation.getLength(); i++){
                                     //System.out.println(Integer.toString(solutionArray[i], radix));
-                                    solution += Integer.toString(solutionArray[i], radix);
+                                    if (solutionIntRepresentation.isNegative()) {
+                                        solutionString += "-";
+                                    }
+                                    solutionString += Integer.toString(solutionIntRepresentation.getChars()[i] , radix);
                                 }
-                                System.out.println("Solution: " + solution);
+                                System.out.println("Solution: " + solutionString);
                                 System.out.println("");
 			}
 		}
 		
 	}
         
-        public static int[] solve(){
-            if (Operation.SUBTRACT == operation){
-                if(x.length != y.length){
-                    if(x.length > y.length){
-                        int[] temp = new int[x.length];
-                        int[] zeros = new int [x.length - y.length];
-                        for (int i = 0; i < zeros.length; i++){
-                            zeros[i] = 0;
-                        }
-                        System.arraycopy(zeros, 0, temp, 0, zeros.length);
-                        System.arraycopy(y, 0, temp, zeros.length, y.length);
-                        y = temp;
-                    }
-                    else{
-                        int[] temp = new int[y.length];
-                        int[] zeros = new int [y.length - x.length];
-                        for (int i = 0; i < zeros.length; i++){
-                            zeros[i] = 0;
-                        }
-                        System.arraycopy(zeros, 0, temp, 0, zeros.length);
-                        System.arraycopy(x, 0, temp, zeros.length, x.length);
-                        x = temp;
-                    }
-                }
-                int[] solution = new int[x.length];
-                //System.out.println("Solution length: " + solution.length);
-                for(int i = solution.length - 1; i >= 0; i--){
-                    if (x[i] >= y[i]){
-                        solution[i] = x[i] - y[i];
-                    }
-                    else{
-                        //TODO: handle negative numbers
-                        if (i != 0){
-                            x[i-1] = x[i-1] - 1;
-                        }
-                        x[i] = x[i] + radix;
-                        solution[i] = x[i] - y[i];
-                    }
-                }
-                //TODO: remove leading 0's
-                /*while(solution[0] == 0){
-                    solution.
-                }*/
-                return solution;
+        public static IntegerRep solve(){
+            IntegerRep answer = null;
+            switch(operation) {
+                case ADD: 
+                    answer = new Addition(x, y).compute();
+                    break;
+                case SUBTRACT:
+                    answer = new Subtraction(x, y).compute();
+                    break;
+                case MULTIPLY:
+                    answer = new PrimMultiplication(x, y).compute();
+                    break;
+                case KARATSUBA:
+                    answer = new Karatsuba(x, y).compute();
             }
-            
-            return new int[1];
+            return answer;
         }
 
 	/**
-	 * Parses a word into ints
+	 * Parses a word into an integerRepresentation (base, isNegative and characters which make up the word
 	 * @param word 		The word to parse
 	 */
-	private static int[] parseWord(String word) {
+	private static IntegerRep parseWord(String word) {
+            boolean isNegative = false;
                 if (word.startsWith("-")){
                     word = word.substring(1);
-                    // TODO: handle negative numbers.
+                    isNegative = true;
                 }
                 int[] temp = new int[word.length()];
 		for(int i = 0; i < word.length(); i++) {
 			temp[i] = Integer.parseInt(Character.toString(word.charAt(i)), radix);
 		}
-		return temp;
+		IntegerRep integerRepresentation = new IntegerRep(radix, isNegative, temp);
+                return integerRepresentation;
 	}
 	
 	/**
@@ -171,5 +140,4 @@ public class IntegerArithmetic {
 	private enum Operation {
 		ADD, SUBTRACT, MULTIPLY, KARATSUBA;
 	}
-
 }
