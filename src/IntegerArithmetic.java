@@ -59,18 +59,27 @@ public class IntegerArithmetic {
 				}
 			} else if (line.startsWith("[radix]")) {
 				radix = Integer.parseInt(line.replaceAll("[\\D]", ""));
+                                System.out.println("Radix: " + radix);
 			} else if (line.startsWith("[add]")) {
 				operation = Operation.ADD;
+                                System.out.println("Operation: add");
 			} else if (line.startsWith("[subtract]")) {
 				operation = Operation.SUBTRACT;
+                                System.out.println("Operation: subtract");
 			} else if (line.startsWith("[multiply]")) {
 				operation = Operation.MULTIPLY;
+                                System.out.println("Operation: multiply");
 			} else if (line.startsWith("[karatsuba]")) {
 				operation = Operation.KARATSUBA;
+                                System.out.println("Operation: karatsuba");
 			} else if (line.startsWith("[x]")) {
-				x = parseWord(scanner.nextLine());
+                                System.out.println("x (radix " + radix + "): " + line.replace("[x] ", ""));
+				x = parseWord(line.replaceAll("[\\D]", ""));
+                                System.out.println("x (int array): " + x);
 			} else if (line.startsWith("[y]")) {
-				y = parseWord(scanner.nextLine());
+                                System.out.println("y (radix " + radix + "): " + line.replace("[y] ", ""));
+				y = parseWord(line.replaceAll("[\\D]", ""));
+                                System.out.println("y (int array): " + y);
 				//TODO: Calculate answer
 			}
 		}
