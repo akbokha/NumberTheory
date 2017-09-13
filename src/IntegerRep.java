@@ -30,4 +30,16 @@ public class IntegerRep {
         return this.chars.length;
     }
     
+    public void setChars(int[] a){
+        this.chars = a;
+    }
+    
+    public void setNegative(){
+        this.isNegative = true;
+    }
+    
+    public void setPositive(){
+        this.isNegative = false;
+    }
+    
 }
