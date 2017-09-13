@@ -99,8 +99,21 @@ public class IntegerArithmetic {
         public static IntegerRep solve(){
             IntegerRep answer = null;
             switch(operation) {
-                case ADD: 
-                    answer = new Addition(x, y).compute();
+                case ADD:
+                	if(x.isNegative() && y.isNegative()) {
+						answer = new Addition(x, y, true).compute();
+					} else if (x.isNegative() || y.isNegative()) {
+                		if(x.isNegative()){
+                			x.setPositive();
+						}
+                		if(y.isNegative()) {
+                			y.setPositive();
+						}
+						answer = new Subtraction(x, y).compute();
+					} else {
+						answer = new Addition(x, y, false).compute();
+					}
+
                     break;
                 case SUBTRACT:
                     answer = new Subtraction(x, y).compute();
