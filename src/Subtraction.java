@@ -17,11 +17,13 @@ public class Subtraction extends AbstractSolver {
             for(int i = 0; i < x.getLength(); i++){
                 x.getChars()[i] *= -1;
             }
+            x.setPositive();
         }
         if(y.isNegative()){
             for(int i = 0; i < y.getLength(); i++){
                 y.getChars()[i] *= -1;
             }
+            y.setPositive();
         }
         
         
@@ -77,7 +79,7 @@ public class Subtraction extends AbstractSolver {
         }
         
         //remove leading 0s
-        while(solution.getChars()[0] == 0){
+        while(solution.getChars()[0] == 0 && solution.getLength() > 1){
             int[] temp = new int[solution.getLength() - 1];
             System.arraycopy(solution.getChars(), 1, temp, 0, temp.length);
             solution.setChars(temp);
