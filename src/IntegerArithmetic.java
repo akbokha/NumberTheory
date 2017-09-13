@@ -74,21 +74,19 @@ public class IntegerArithmetic {
 				operation = Operation.KARATSUBA;
                                 System.out.println("Operation: karatsuba");
 			} else if (line.startsWith("[x]")) {
-                                System.out.println("x (radix " + radix + "): " + line.replace("[x] ", ""));
-				x = parseWord(line.replaceAll("[\\D]", ""));
-                                System.out.println("x (int array): " + x);
+                                System.out.println("x (radix " + radix + "): " + line);
+				x = parseWord(line.substring(4)); //remove "[x] "
 			} else if (line.startsWith("[y]")) {
-                                System.out.println("y (radix " + radix + "): " + line.replace("[y] ", ""));
-				y = parseWord(line.replaceAll("[\\D]", ""));
-                                System.out.println("y (int array): " + y);
-				//TODO: Calculate answer
+                                System.out.println("y (radix " + radix + "): " + line);
+				y = parseWord(line.substring(4)); //remove "[y] "
+                                
+                                //Calculate the solution
                                 IntegerRep solutionIntRepresentation = solve();
                                 String solutionString = "";
-                                for(int i = 0; i < solutionIntRepresentation.getLength(); i++){
-                                    //System.out.println(Integer.toString(solutionArray[i], radix));
-                                    if (solutionIntRepresentation.isNegative()) {
+                                if (solutionIntRepresentation.isNegative()) {
                                         solutionString += "-";
-                                    }
+                                }
+                                for(int i = 0; i < solutionIntRepresentation.getLength(); i++){
                                     solutionString += Integer.toString(solutionIntRepresentation.getChars()[i] , radix);
                                 }
                                 System.out.println("Solution: " + solutionString);
