@@ -5,12 +5,21 @@
  */
 
 /**
+ * Solver that does an operation on 2 integers with the same length
  *
  * @author Abdel K. Bokharouss
+ * @author Bart van Helvert
  */
 public abstract class AbstractSolver {
-    IntegerRep x; // first number of the calculation
-    IntegerRep y; // second number of the calculation
+    /**
+     * First number of the computation
+     */
+    IntegerRep x;
+
+    /**
+     * Second number of the computation
+     */
+    IntegerRep y;
     
     public AbstractSolver(IntegerRep x, IntegerRep y) {
         this.x = x;
@@ -20,7 +29,8 @@ public abstract class AbstractSolver {
     /**
      * Return an integer-representation of the answer based on the parsed computation method
      * and the values of this.x and this.y of the particular object
-     * @return 
+     *
+     * @return integer representation of the result of the computation
      */
     public abstract IntegerRep compute(); 
     
