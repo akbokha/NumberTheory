@@ -100,19 +100,20 @@ public class IntegerArithmetic {
             IntegerRep answer = null;
             switch(operation) {
                 case ADD:
-                	if(x.isNegative() && y.isNegative()) {
-						answer = new Addition(x, y, true).compute();
-					} else if (x.isNegative() || y.isNegative()) {
-                		if(x.isNegative()){
-                			x.setPositive();
-						}
-                		if(y.isNegative()) {
-                			y.setPositive();
-						}
-						answer = new Subtraction(x, y).compute();
-					} else {
-						answer = new Addition(x, y, false).compute();
-					}
+                    if (x.isNegative() && y.isNegative()) {
+                        answer = new Addition(x, y, true).compute();
+                    } else if (x.isNegative() || y.isNegative()) {
+                        if (x.isNegative()) {
+                            x.setPositive();
+                            answer = new Subtraction(y, x).compute();
+                        }
+                        if (y.isNegative()) {
+                            y.setPositive();
+                            answer = new Subtraction(x, y).compute();
+                        }
+                    } else {
+                        answer = new Addition(x, y, false).compute();
+                    }
 
                     break;
                 case SUBTRACT:
