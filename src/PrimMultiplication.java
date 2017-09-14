@@ -25,6 +25,9 @@ public class PrimMultiplication extends AbstractSolver {
         
         for (int i = x.getLength() - 1; i >= 0; i--){
             ArrayList<Integer> temp2 = new ArrayList<>();
+            for(int k = x.getLength() - 1; k > i; k--){
+                temp2.add(0,0);
+            }
             for (int j = y.getLength() - 1; j >= 0; j--){
                 int xy = x.getChars()[i] * y.getChars()[j];
                 numberOfElemMultiplications++;
@@ -43,10 +46,31 @@ public class PrimMultiplication extends AbstractSolver {
             temp.add(0, temp2);
         }
         
+        //convert to int arrays
+        ArrayList<int[]> intarrays = new ArrayList<>();
+        for(int j = 0; j < temp.size(); j++){
+            int[] result = new int[temp.get(0).size()];
+            for (int i = 0; i < temp.get(0).size(); i++){
+                result[i] = temp.get(0).get(i);
+            }
+            intarrays.set(j, result);
+        }
         
+        //TODO add items in intarrays
+        for(int i = 0; i < intarrays.size() - 1; i++){
+            intarrays.set(0, new Addition(new IntegerRep(x.getRadix(), false, intarrays.get(0)), new IntegerRep(x.getRadix(), false, intarrays.get(i+1)), false).compute().getChars());
+            numberOfElemOperations++;
+        }
         
+        //create solution
+        IntegerRep solution = new IntegerRep(x.getRadix(), false, intarrays.get(0));
         
-        return new IntegerRep(0, false, new int[] {0}); // dummy instance
+        //handle negative inputs
+        if(x.isNegative() ^ y.isNegative()){
+            solution.setNegative();
+        }
+        
+        return solution;
     }
     
     public int getNumberElemOperations() {
