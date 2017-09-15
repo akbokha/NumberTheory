@@ -22,40 +22,24 @@ public class PrimMultiplication extends AbstractSolver {
         
         // compute with x and y
         ArrayList<ArrayList<Integer>> temp = new ArrayList<>(x.getLength());
-        
-        for (int i = x.getLength() - 1; i >= 0; i--){
+
+        for (int j = x.getLength() - 1; j >= 0; j--){
             ArrayList<Integer> temp2 = new ArrayList<>();
-            for(int k = x.getLength() - 1; k > i; k--){
+            int c = 0;
+            for (int k = x.getLength() - 1; k > j; k--) {
                 temp2.add(0,0);
             }
-            for (int j = y.getLength() - 1; j >= 0; j--){
-                for (int k = y.getLength() - 1; k > j; k--) {
-                    temp2.add(0, 0);
-                }
-                int xy = x.getChars()[i] * y.getChars()[j];
+            for (int i = y.getLength() - 1; i >= 0; i--){
+                int xy = (x.getChars()[i] * y.getChars()[j]) + c;
                 numberOfElemMultiplications++;
-                if(temp2.size() <= j + 1 - y.getLength()){
-                    temp2.add(0, xy % x.getRadix());
-                }
-                else{
-                    temp2.set(0, temp2.get(0) + xy % x.getRadix());
-                    numberOfElemOperations++;
-                }
-                if(xy > x.getRadix()){
-                    temp2.add(0, (xy - xy % x.getRadix()) / x.getRadix());
-                    numberOfElemOperations++;
-                }
+                temp2.add(0, xy % x.getRadix());
+                c = (xy - xy % x.getRadix()) / x.getRadix();
+            }
+            if (c != 0) {
+                temp2.add(0,c);
             }
             temp.add(0, temp2);
-            
-            //Print digits added
-            String itemString = "";
-            for (int j = 0; j < temp2.size(); j++){
-                itemString += Integer.toString(temp2.get(j), x.getRadix());
-            }
-            System.out.println("digit: " + itemString);
         }
-        
         //convert to int arrays
         ArrayList<int[]> intarrays = new ArrayList<>();
         for(int j = 0; j < temp.size(); j++){
@@ -65,17 +49,7 @@ public class PrimMultiplication extends AbstractSolver {
             }
             intarrays.add(j, result);
         }
-        
-        //print items to be added
-        for (int i = 0; i < intarrays.size(); i++) {
-            String itemString = "";
-            for (int j = 0; j < intarrays.get(i).length; j++){
-                itemString += Integer.toString(intarrays.get(i)[j], x.getRadix());
-            }
-            System.out.println("Item: " + itemString);
-        }
-        
-        
+       
         //TODO add items in intarrays
         for(int i = 0; i < intarrays.size() - 1; i++){
             intarrays.set(0, new Addition(new IntegerRep(x.getRadix(), false, intarrays.get(0)), new IntegerRep(x.getRadix(), false, intarrays.get(i+1)), false).compute().getChars());

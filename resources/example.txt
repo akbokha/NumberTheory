@@ -21,6 +21,30 @@
 # the [multiply] and [karatsuba] examples below use the same values for [x] and [y] 
 # (for the same [radix]); the answers your program produces should be equal too
 
+[radix] 10
+[multiply]
+[x] -45
+[y] -43
+# [answer] -1935
+
+[radix] 10
+[multiply]
+[x] 99
+[y] 99
+# [answer] 9801
+
+[radix] 2
+[multiply]
+[x] 1100
+[y] 1100
+# [answer] 10010000
+
+[radix] 10
+[multiply]
+[x] 12
+[y] 12
+# [answer] 144
+
 [radix] 2 
 [add]
 [x] 1100110001011011110011101011100100000001010101111101001111010101111100110110001100010100001011111010
