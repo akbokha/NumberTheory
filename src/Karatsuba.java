@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  *
  * @author Abdel K. Bokharouss
@@ -17,78 +19,114 @@ public class Karatsuba extends AbstractSolver {
     
     @Override
     public IntegerRep compute() {
-        addLeadingZeroes(); // add leading zeroes if odd bit length or uneven bit length among the two numbers.
-        
-        int n = x.getLength(); // bit length of the original numbers
-        
-        if (x.getRadix() != y.getRadix()) {
-            throw new IllegalArgumentException("x and y should have the same base");
-        } else {
-            radix = x.getRadix(); // x and y should have the same radix.
-        }
-        
-        int[] copy_x = new int[x.getLength()]; // a copy of the int array of x to use in the calculation
-        System.arraycopy(x.getChars(), 0, copy_x, 0, x.getLength());
-        IntegerRep calc_x = new IntegerRep(radix, false, copy_x);
-        int[] copy_y = new int[y.getLength()]; // a copy of the int array of y to use in the calculation
-        System.arraycopy(y.getChars(), 0, copy_y, 0, y.getLength());
-        IntegerRep calc_y = new IntegerRep(radix, false, copy_y);
-        
-        IntegerRep result = multiplyKaratsuba(calc_x, calc_y, n); 
-        return new IntegerRep(radix, isAnswerNegative(), result.getChars()); // dummy instance
+        radix = this.x.getRadix(); // this.x.getRadix() == this.y.getRadix()
+        IntegerRep result = multiplyKaratsuba(this.x, this.y); // calculate x * y using the method of Karatsuba
+        result.setChars(removeLeadingZeroes(result.getChars())); //remove leading zeroes
+        return new IntegerRep(radix, isAnswerNegative(this.x, this.y), result.getChars()); // return x * y 
     }
     
-    private IntegerRep multiplyKaratsuba(IntegerRep xx, IntegerRep yy, int n) {
-        if (n == 1) {
-            int [] resultMultiplication = new int[]{xx.getChars()[0] * yy.getChars()[0]};
-            numberOfElemMultiplications++;
-            return new IntegerRep(radix, false, resultMultiplication);
-        } else {
-           int new_n = n / 2; // new bit length
-           int [] xx_hi_chars = new int[new_n];
-           int [] xx_lo_chars = new int[new_n];
-           int [] yy_hi_chars = new int[new_n];
-           int [] yy_lo_chars = new int[new_n];
+    /**
+     * Multiplication by the method of Karatsuba (using recursion)
+     * @param xx first integer
+     * @param yy second integer
+     * @return an integer representation (IntegerRep) of the multiplication of the two numbers
+     */
+    private IntegerRep multiplyKaratsuba(IntegerRep xx, IntegerRep yy) {
+        boolean resultIsNegative = isAnswerNegative(xx, yy); 
         
-           for (int i = 0; i < new_n; i++) {
-               xx_hi_chars[i] = xx.getChars()[i];
-               yy_hi_chars[i] = yy.getChars()[i];
-           }
-           
-           for (int j = xx.getChars().length - 1; j >= new_n; j--) {
-               xx_lo_chars[j] = xx.getChars()[j];
-               yy_lo_chars[j] = yy.getChars()[j];
-           }
-           
-           IntegerRep xx_hi = new IntegerRep(radix, false, xx_hi_chars);
-           IntegerRep xx_lo = new IntegerRep(radix, false, xx_lo_chars);
-           IntegerRep yy_hi = new IntegerRep(radix, false, yy_hi_chars);
-           IntegerRep yy_lo = new IntegerRep(radix, false, yy_lo_chars);
-           
-           int [] b_temp = new int[new_n];
-           b_temp[new_n - 1] = (int) Math.pow(radix, n);
-           IntegerRep b_n = new IntegerRep(10, false, b_temp);
-           int [] b2_temp = new int[new_n];
-           b2_temp[new_n - 1] = (int) Math.pow(radix, new_n);
-           IntegerRep b_n2 = new IntegerRep(10, false, b2_temp);
-           
-           IntegerRep xx_hi_yy_hi = multiplyKaratsuba(xx_hi, yy_hi, new_n);
-           IntegerRep xx_hi_yy_hi_bn = multiplyKaratsuba(xx_hi_yy_hi, b_n, new_n);
-           IntegerRep xx_hi_yy_lo = multiplyKaratsuba(xx_hi, yy_lo, new_n);
-           IntegerRep xx_lo_yy_hi = multiplyKaratsuba(xx_lo, yy_hi, new_n);
-           
-           IntegerRep middle_term = new Addition(xx_hi_yy_lo, xx_lo_yy_hi, false).compute();
-           IntegerRep middle_term_bn2 = multiplyKaratsuba(middle_term, b_n2, new_n);
-           
-           IntegerRep xx_lo_yy_lo = multiplyKaratsuba(xx_lo, yy_lo, new_n);
-           
-           IntegerRep middle_term_xx_lo_yy_lo = new Addition(middle_term_bn2, xx_lo_yy_lo, false).compute();
-           IntegerRep final_result = new Addition(xx_hi_yy_hi_bn, middle_term_xx_lo_yy_lo, false).compute();
-           
-           numberOfElemOperations += 3;
-           numberOfElemMultiplications += 6;
-           return final_result;
+        if (xx.getLength() == 1 && yy.getLength() == 1) { // base case
+            int result = xx.getChars()[0] * yy.getChars()[0];
+            numberOfElemMultiplications += 1;
+            int [] resultChars;
+            if (result >= radix) {
+                resultChars = new int[]{(result / radix), (result % radix)};
+            } else {
+                resultChars = new int[]{result};
+            }
+            return new IntegerRep(radix, resultIsNegative, resultChars);
+        } else {
+            int longest_length = Math.max(xx.getLength(), yy.getLength());
+            if (longest_length % 2 == 1) { // the bit length has to be even
+                longest_length++;
+            }
+            // add leading zero if the bit length and array length do not match
+            int [] xx_chars = addLeadingZeroes(xx, longest_length);
+            int [] yy_chars = addLeadingZeroes(yy, longest_length);
+            
+            // splitting the (array representation) of the integers 
+            IntegerRep xxHi = new IntegerRep(radix, false, Arrays.copyOfRange(xx_chars, 0, (longest_length / 2)));
+            IntegerRep yyHi = new IntegerRep(radix, false, Arrays.copyOfRange(yy_chars, 0, (longest_length / 2)));
+            IntegerRep xxLo = new IntegerRep(radix, false, Arrays.copyOfRange(xx_chars, (longest_length / 2), longest_length));
+            IntegerRep yyLo = new IntegerRep(radix, false, Arrays.copyOfRange(yy_chars, (longest_length / 2), longest_length));
+            
+            IntegerRep xxHi_x_yyHi = multiplyKaratsuba(xxHi, yyHi);
+            IntegerRep xxLo_x_yyLo = multiplyKaratsuba(xxLo, yyLo);
+            IntegerRep xxHi_plus_xxLo = new Addition(xxHi, xxLo, false).compute();
+            IntegerRep yyHi_plus_yyLo = new Addition(yyHi, yyLo,false).compute();
+            
+            IntegerRep xxHixxLo_x_yyHiyyLo = multiplyKaratsuba(xxHi_plus_xxLo, yyHi_plus_yyLo);
+            IntegerRep minus_xxHi_x_yyHi = new Subtraction(xxHixxLo_x_yyHiyyLo, xxHi_x_yyHi).compute();
+            IntegerRep minus_xxLo_x_yyLo = new Subtraction(minus_xxHi_x_yyHi, xxLo_x_yyLo).compute();
+            
+            // do the necessary bit shifting (because of b^n and b^(n/2), where b = this.radix and n = longest_length, in the Karatsuba formula
+            IntegerRep shift_xxHi_x_yyHi = shift(xxHi_x_yyHi, longest_length);
+            IntegerRep shift_minus_xxLo_x_yyLo = shift(minus_xxLo_x_yyLo, (longest_length/2));
+            
+            IntegerRep add_results = new Addition(shift_xxHi_x_yyHi, shift_minus_xxLo_x_yyLo, false).compute();
+            IntegerRep final_result = new Addition(add_results, xxLo_x_yyLo, false).compute();
+            if (resultIsNegative) {
+                final_result.setNegative(); // needed for the correct output
+            }
+            return final_result;
         } 
+    }
+    
+    /**
+     * Add leading zeroes to the int (array) if necessary
+     * @param num the integer that possibly needs leading zeroes
+     * @param longest_len the bit length we need to reach (or already have)
+     * @return an array with length = longest_len
+     */
+    private int [] addLeadingZeroes(IntegerRep num, int longest_len) {
+        if (num.getLength() < longest_len) {
+            int [] result = new int[longest_len];
+            int [] zeroes = new int[longest_len - num.getLength()];
+            System.arraycopy(zeroes, 0, result, 0, zeroes.length);
+            System.arraycopy(num.getChars(), 0, result, zeroes.length, num.getLength());
+            return result;
+        } else {
+            return num.getChars();
+        }
+    }
+    
+    /**
+     * Remove leading zeroes from the array in question
+     * @param input the array from which leading zeroes need to be removed
+     * @return the input array without leading zeroes
+     */
+    private int [] removeLeadingZeroes(int [] input) {
+        int count_zeroes = 0;
+        for (int i = 0; i < input.length; i++) {
+            if (input[i] != 0) {
+                break;
+            }
+            count_zeroes++;
+        }
+        int [] result = new int[input.length - count_zeroes];
+        System.arraycopy(input, count_zeroes, result, 0, (input.length - count_zeroes));
+        return result;
+    }
+    
+    /**
+     * Shift the array found in the IntegerRep k bits
+     * @param num the integer that needs bit shifting
+     * @param k the number of bits we need to shift
+     * @return the same integer with the necessary shifting
+     */
+    private IntegerRep shift (IntegerRep num, int k) {
+        int [] padded_array = new int[num.getLength() + k];
+        System.arraycopy(num.getChars(), 0, padded_array, 0, num.getLength());
+        return new IntegerRep(radix, false, padded_array);
     }
     
     public int getNumberElemOperations() {
@@ -99,29 +137,13 @@ public class Karatsuba extends AbstractSolver {
         return this.numberOfElemMultiplications;
     }
     
-    private boolean isAnswerNegative() {
-        return (this.x.isNegative() && ! (this.y.isNegative())) || (! (this.x.isNegative()) && this.y.isNegative());
+    /**
+     * Determines whether the answer of the multiplication num1 * num2 should be negative
+     * @param num1 the first integer
+     * @param num2 the second integer
+     * @return true if answer should be negative
+     */
+    private boolean isAnswerNegative(IntegerRep num1, IntegerRep num2) {
+        return (num1.isNegative() && ! (num2.isNegative())) || (! (num1.isNegative()) && num2.isNegative());
     }
-    
-    private void addLeadingZeroes() {
-        int longestBitLength = Math.max(x.getLength(), y.getLength());
-        if (longestBitLength % 2 == 1) { // if odd, make even
-            longestBitLength += 1;
-        }
-        if (x.getLength() != longestBitLength) {
-            int [] zeroes_x = new int [x.getLength() - longestBitLength];
-            int [] x_padded = new int[x.getLength() + zeroes_x.length];
-            System.arraycopy(zeroes_x, 0, x_padded, 0, zeroes_x.length);
-            System.arraycopy(x.getChars(), 0, x_padded, zeroes_x.length, x.getLength());
-            x.setChars(x_padded);
-        }
-        if (y.getLength() != longestBitLength) {
-            int [] zeroes_y = new int [y.getLength() - longestBitLength];
-            int [] y_padded = new int[y.getLength() + zeroes_y.length];
-            System.arraycopy(zeroes_y, 0, y_padded, 0, zeroes_y.length);
-            System.arraycopy(y.getChars(), 0, y_padded, zeroes_y.length, y.getLength());
-            y.setChars(y_padded);
-        }
-    }
-    
 }
