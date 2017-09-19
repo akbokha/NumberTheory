@@ -25,7 +25,7 @@
 [multiply]
 [x] -45
 [y] -43
-# [answer] -1935
+# [answer] 1935
 
 [radix] 10
 [multiply]
