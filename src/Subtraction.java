@@ -60,6 +60,19 @@ public class Subtraction extends AbstractSolver {
             }
         }
         
+        //if y is greater than x, flip them around and re-compute with negative outcome
+        for(int i = 0; i < x.getLength(); i++){
+            if(x.getChars()[i] > y.getChars()[i]){
+                break;
+            }
+            else if(x.getChars()[i] < y.getChars()[i]){
+                //restart with x and y switched around, and the solution negative
+                IntegerRep solution = new Subtraction(y, x).compute();
+                solution.setNegative();
+                return solution;
+            }
+        }
+        
         //Create a solution with the appropriate radix and length
         IntegerRep solution = new IntegerRep(x.getRadix(), false, new int[x.getLength()]);
         
@@ -74,9 +87,6 @@ public class Subtraction extends AbstractSolver {
             
             //If the outcome of this single digit subtraction is negative
             else {
-                
-                //If this is NOT the last digit
-                if (i != 0) {
                     //decrement x[i-1]
                     x.getChars()[i - 1] = x.getChars()[i - 1] - 1;
                     //add the radix to x[i] (this is what we just got from x[i-1])
@@ -84,19 +94,6 @@ public class Subtraction extends AbstractSolver {
                     //digit i in the solution is x[i] - y[i]
                     solution.getChars()[i] = x.getChars()[i] - y.getChars()[i];
                     IntegerArithmetic.countNumberElemOperations += 3;
-                }
-                
-                //If this is the last digit
-                else{
-                    //Since the last digit (i.e. the first digit of the solution)
-                    //is negative, the whole solution is negative
-                    //To solve this problem, re-compute the solution, so that
-                    //we get the correct solution, but inverted
-                    solution = new Subtraction(y, x).compute();
-                    //then make the new solution negative, so that we have the
-                    //correct solution
-                    solution.setNegative();
-                }
             }
         }
         
