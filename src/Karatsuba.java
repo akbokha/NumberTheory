@@ -6,15 +6,10 @@ import java.util.Arrays;
  */
 public class Karatsuba extends AbstractSolver {
     
-    private int numberOfElemOperations; // track the number of elementary additions/substractions
-    private int numberOfElemMultiplications; // track the number of elementary multiplications
-    
     private int radix; // base of the numbers
     
     public Karatsuba (IntegerRep x, IntegerRep y) {
         super(x, y);
-        this.numberOfElemOperations = 0;
-        this.numberOfElemMultiplications = 0;
     }
     
     @Override
@@ -36,7 +31,7 @@ public class Karatsuba extends AbstractSolver {
         
         if (xx.getLength() == 1 && yy.getLength() == 1) { // base case
             int result = xx.getChars()[0] * yy.getChars()[0];
-            numberOfElemMultiplications += 1;
+            IntegerArithmetic.countNumberMultiplications++;
             int [] resultChars;
             if (result >= radix) {
                 resultChars = new int[]{(result / radix), (result % radix)};
@@ -127,14 +122,6 @@ public class Karatsuba extends AbstractSolver {
         int [] padded_array = new int[num.getLength() + k];
         System.arraycopy(num.getChars(), 0, padded_array, 0, num.getLength());
         return new IntegerRep(radix, false, padded_array);
-    }
-    
-    public int getNumberElemOperations() {
-        return this.numberOfElemOperations;
-    }    
-    
-    public int getNumberMultiplications() {
-        return this.numberOfElemMultiplications;
     }
     
     /**

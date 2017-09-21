@@ -9,13 +9,8 @@ import java.util.ArrayList;
  */
 public class PrimMultiplication extends AbstractSolver {
 
-    private int numberOfElemOperations; // track the number of elementary additions/substractions
-    private int numberOfElemMultiplications; // track the number of elementart multiplications
-
     public PrimMultiplication(IntegerRep x, IntegerRep y) {
         super(x, y);
-        this.numberOfElemOperations = 0;
-        this.numberOfElemMultiplications = 0;
     }
 
     @Override
@@ -39,11 +34,9 @@ public class PrimMultiplication extends AbstractSolver {
             
             for (int i = y.getLength() - 1; i >= 0; i--) {
                 int xy = (x.getChars()[i] * y.getChars()[j]) + c;
-                numberOfElemMultiplications++;
-                numberOfElemOperations++;
+                IntegerArithmetic.countNumberMultiplications++;
                 temp2.add(0, xy % x.getRadix());
                 c = (xy - xy % x.getRadix()) / x.getRadix();
-                numberOfElemOperations++;
             }
             //at the end: if carry is not equal to 0, add it at the beginning
             //of the list
@@ -65,7 +58,6 @@ public class PrimMultiplication extends AbstractSolver {
         //add items in intarrays
         for (int i = 0; i < intarrays.size() - 1; i++) {
             intarrays.set(0, new Addition(new IntegerRep(x.getRadix(), false, intarrays.get(0)), new IntegerRep(x.getRadix(), false, intarrays.get(i + 1)), false).compute().getChars());
-            numberOfElemOperations++;
         }
 
         //create solution
@@ -77,13 +69,5 @@ public class PrimMultiplication extends AbstractSolver {
         }
 
         return solution;
-    }
-
-    public int getNumberElemOperations() {
-        return this.numberOfElemOperations;
-    }
-
-    public int getNumberMultiplications() {
-        return this.numberOfElemMultiplications;
     }
 }

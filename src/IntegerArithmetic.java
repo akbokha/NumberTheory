@@ -31,11 +31,9 @@ public class IntegerArithmetic {
 	 * Stores the second value of the input
 	 */
 	private static IntegerRep y;
-
-	/**
-	 * The answer of the calculation
-	 */
-	private static IntegerRep answer;
+        
+        public static int countNumberElemOperations = 0;
+        public static int countNumberMultiplications = 0;
 
 	/**
 	 * Main function
@@ -90,6 +88,12 @@ public class IntegerArithmetic {
                                     solutionString += Integer.toString(solutionIntRepresentation.getChars()[i] , radix);
                                 }
                                 System.out.println("Solution: " + solutionString);
+                                System.out.println("Number of elementary operations: " + countNumberElemOperations);
+                                countNumberElemOperations = 0;
+                                if (operation == Operation.KARATSUBA || operation == Operation.MULTIPLY) {
+                                    System.out.println("Number of multiplications: " + countNumberMultiplications);
+                                    countNumberMultiplications = 0;
+                                }
                                 System.out.println("");
 			}
 		}

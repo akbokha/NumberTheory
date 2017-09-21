@@ -69,6 +69,7 @@ public class Subtraction extends AbstractSolver {
             if (x.getChars()[i] >= y.getChars()[i]) {
                 //then digit i in the solution is x[i] - y[i]
                 solution.getChars()[i] = x.getChars()[i] - y.getChars()[i];
+                IntegerArithmetic.countNumberElemOperations++;
             } 
             
             //If the outcome of this single digit subtraction is negative
@@ -82,6 +83,7 @@ public class Subtraction extends AbstractSolver {
                     x.getChars()[i] = x.getChars()[i] + x.getRadix();
                     //digit i in the solution is x[i] - y[i]
                     solution.getChars()[i] = x.getChars()[i] - y.getChars()[i];
+                    IntegerArithmetic.countNumberElemOperations += 3;
                 }
                 
                 //If this is the last digit
