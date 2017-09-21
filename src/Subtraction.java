@@ -12,6 +12,16 @@ public class Subtraction extends AbstractSolver {
     @Override
     public IntegerRep compute() {
         
+        /* Optional: use addition if possible
+        if(x.isNegative() && !y.isNegative()){
+            x.setPositive();
+            return new Addition(x, y, true).compute();
+        }
+        else if(!x.isNegative() && y.isNegative()){
+            y.setPositive();
+            return new Addition(x, y, false).compute();
+        }*/
+        
         //handle negative x and y
         //if x is negative
         if(x.isNegative()){
@@ -71,7 +81,7 @@ public class Subtraction extends AbstractSolver {
                 solution.setNegative();
                 return solution;
             }
-        }
+        }      
         
         //Create a solution with the appropriate radix and length
         IntegerRep solution = new IntegerRep(x.getRadix(), false, new int[x.getLength()]);

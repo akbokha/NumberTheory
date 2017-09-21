@@ -22,6 +22,18 @@
 # (for the same [radix]); the answers your program produces should be equal too
 
 [radix] 10
+[subtract]
+[x] 50
+[y] -50
+# [answer] 100
+
+[radix] 2 
+[subtract]
+[x] 1
+[y] -1
+# [answer] 10
+
+[radix] 10
 [multiply]
 [x] -45
 [y] -43

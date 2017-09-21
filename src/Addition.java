@@ -45,16 +45,27 @@ public class Addition extends AbstractSolver {
         int sum;
         //Run the algorithm
         for(int i = x.getLength() - 1; i >= 0; i--) {
-            sum = x.getChars()[i] + y.getChars()[i] + carry;
-            result[i + 1] = sum % x.getRadix();
-            carry = sum / x.getRadix();
+            sum = x.getChars()[i] + y.getChars()[i];
             IntegerArithmetic.countNumberElemOperations++;
+            if(carry > 0){
+                sum += carry;
+                IntegerArithmetic.countNumberElemOperations++;
+            }
+            if(sum >= x.getRadix()){
+                sum -= x.getRadix();
+                IntegerArithmetic.countNumberElemOperations++;
+                carry = 1;
+            }
+            else{
+                carry = 0;
+            }
+            result[i + 1] = sum;
         }
 
         //Add most significant word if necessary
         if(carry != 0 ) {
             result[0] = carry;
-            IntegerArithmetic.countNumberElemOperations++;
+            //IntegerArithmetic.countNumberElemOperations++;
             return new IntegerRep(x.getRadix(), resultNegative, result);
         } else {
             int[] resultWithoutcarry = new int[x.getLength()];
