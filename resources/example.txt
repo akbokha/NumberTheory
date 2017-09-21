@@ -23,6 +23,12 @@
 
 [radix] 10
 [subtract]
+[x] 23
+[y] -18
+# [answer] 41
+
+[radix] 10
+[subtract]
 [x] 50
 [y] -50
 # [answer] 100

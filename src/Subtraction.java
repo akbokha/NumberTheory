@@ -93,8 +93,12 @@ public class Subtraction extends AbstractSolver {
                 //then digit i in the solution is x[i] - y[i]
                 solution.getChars()[i] = x.getChars()[i] - y.getChars()[i];
                 IntegerArithmetic.countNumberElemOperations++;
+                if(solution.getChars()[i] > x.getRadix() && i != 0){
+                    solution.getChars()[i] -= x.getRadix();
+                    x.getChars()[i - 1] ++;
+                    IntegerArithmetic.countNumberElemOperations += 2;
+                }
             } 
-            
             //If the outcome of this single digit subtraction is negative
             else {
                     //decrement x[i-1]
