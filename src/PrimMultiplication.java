@@ -35,8 +35,10 @@ public class PrimMultiplication extends AbstractSolver {
             for (int i = y.getLength() - 1; i >= 0; i--) {
                 int xy = (x.getChars()[i] * y.getChars()[j]) + c;
                 IntegerArithmetic.countNumberMultiplications++;
+                IntegerArithmetic.countNumberElemOperations++;
                 temp2.add(0, xy % x.getRadix());
                 c = (xy - xy % x.getRadix()) / x.getRadix();
+                IntegerArithmetic.countNumberElemOperations++;
             }
             //at the end: if carry is not equal to 0, add it at the beginning
             //of the list
