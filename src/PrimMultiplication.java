@@ -22,18 +22,18 @@ public class PrimMultiplication extends AbstractSolver {
 
         //loop through both [x] and [y]
         //loop from "right to left"
-        for (int j = x.getLength() - 1; j >= 0; j--) {
+        for (int i = x.getLength() - 1; i >= 0; i--) {
             //list, where each element represents a digit
             ArrayList<Integer> temp2 = new ArrayList<>();
             int c = 0; //carry
             
-            for (int k = x.getLength() - 1; k > j; k--) {
+            for (int k = x.getLength() - 1; k > i; k--) {
                 // add zero's when go to "next line"
                 temp2.add(0, 0); 
             }
             
-            for (int i = y.getLength() - 1; i >= 0; i--) {
-                int xy = (x.getChars()[i] * y.getChars()[j]) + c;
+            for (int j = y.getLength() - 1; j >= 0; j--) {
+                int xy = (x.getChars()[j] * y.getChars()[i]) + c;
                 IntegerArithmetic.countNumberMultiplications++;
                 IntegerArithmetic.countNumberElemOperations++;
                 temp2.add(0, xy % x.getRadix());
