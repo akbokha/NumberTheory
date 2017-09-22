@@ -8,11 +8,6 @@ import java.lang.Math;
  */
 public class IntegerArithmetic {
 	/**
-	 * If the code is meant for hand in of the assignment
-	 */
-	private static boolean HANDIN = false;
-
-	/**
 	 * The radix of the input
 	 */
 	private static int radix;
@@ -43,12 +38,7 @@ public class IntegerArithmetic {
 	public static void main(String[] args) throws Exception {
 		//Storing data and add scanner
 		File file = new File("./resources/example.txt");
-		Scanner scanner;
-		if(HANDIN) {
-			scanner = new Scanner(System.in);
-		} else {
-			scanner = new Scanner(file);
-		}
+		Scanner scanner =  new Scanner(file);
 
 		while(scanner.hasNextLine()) {
 			String line  = scanner.nextLine();

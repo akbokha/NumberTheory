@@ -55,8 +55,7 @@ public class Addition extends AbstractSolver {
                 sum -= x.getRadix();
                 IntegerArithmetic.countNumberElemOperations++;
                 carry = 1;
-            }
-            else{
+            } else{
                 carry = 0;
             }
             result[i + 1] = sum;
