@@ -17,18 +17,18 @@ public class PrimMultiplication extends AbstractSolver {
     public IntegerRep compute() {
 
         // create a double arraylist
-        // so you can easily add elements at the beginning of the list later
+        // so you can easily add elements at the beginning of the list
         ArrayList<ArrayList<Integer>> temp = new ArrayList<>(x.getLength());
 
         //loop through both [x] and [y]
-        //loop from "right to left"
+        //loop from "right to left", starting 
         for (int i = x.getLength() - 1; i >= 0; i--) {
             //list, where each element represents a digit
             ArrayList<Integer> temp2 = new ArrayList<>();
             int c = 0; //carry
             
             for (int k = x.getLength() - 1; k > i; k--) {
-                // add zero's when go to "next line"
+                // add zero's when we reach the next digit in y
                 temp2.add(0, 0); 
             }
             
