@@ -57,7 +57,6 @@ public class Karatsuba extends AbstractSolver {
             IntegerRep yyHi = new IntegerRep(radix, false, Arrays.copyOfRange(yy_chars, 0, (longest_length / 2)));
             IntegerRep xxLo = new IntegerRep(radix, false, Arrays.copyOfRange(xx_chars, (longest_length / 2), longest_length));
             IntegerRep yyLo = new IntegerRep(radix, false, Arrays.copyOfRange(yy_chars, (longest_length / 2), longest_length));
-            //removeEqualZeroes(xxHi, yyHi);
             IntegerRep xxHi_x_yyHi = multiplyKaratsuba(xxHi, yyHi);
             IntegerRep xxLo_x_yyLo = multiplyKaratsuba(xxLo, yyLo);
             IntegerRep xxHi_plus_xxLo = new Addition(xxHi, xxLo, false).compute();
