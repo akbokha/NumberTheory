@@ -40,6 +40,10 @@ public class Karatsuba extends AbstractSolver {
             }
             return new IntegerRep(radix, resultIsNegative, resultChars);
         } else {
+            removeEqualZeroes(xx, yy);
+            if (xx.getLength() == 1 && yy.getLength() == 1) { // it was actually the base case
+                return multiplyKaratsuba(xx, yy);
+            }
             int longest_length = Math.max(xx.getLength(), yy.getLength());
             if (longest_length % 2 == 1) { // the bit length has to be even
                 longest_length++;
@@ -53,7 +57,6 @@ public class Karatsuba extends AbstractSolver {
             IntegerRep yyHi = new IntegerRep(radix, false, Arrays.copyOfRange(yy_chars, 0, (longest_length / 2)));
             IntegerRep xxLo = new IntegerRep(radix, false, Arrays.copyOfRange(xx_chars, (longest_length / 2), longest_length));
             IntegerRep yyLo = new IntegerRep(radix, false, Arrays.copyOfRange(yy_chars, (longest_length / 2), longest_length));
-            
             IntegerRep xxHi_x_yyHi = multiplyKaratsuba(xxHi, yyHi);
             IntegerRep xxLo_x_yyLo = multiplyKaratsuba(xxLo, yyLo);
             IntegerRep xxHi_plus_xxLo = new Addition(xxHi, xxLo, false).compute();
@@ -132,5 +135,16 @@ public class Karatsuba extends AbstractSolver {
      */
     private boolean isAnswerNegative(IntegerRep num1, IntegerRep num2) {
         return (num1.isNegative() && ! (num2.isNegative())) || (! (num1.isNegative()) && num2.isNegative());
+    }
+    
+    private void removeEqualZeroes(IntegerRep x, IntegerRep y) {
+        if(x.getChars()[0] == 0 && y.getChars()[0] == 0) {
+            int [] newx = new int[x.getLength() - 1];
+            System.arraycopy(x.getChars(), 1, newx, 0, x.getLength() - 1);
+            x.setChars(newx);
+            int [] newy = new int[y.getLength() - 1];
+            System.arraycopy(y.getChars(), 1, newy, 0, y.getLength() - 1);
+            y.setChars(newy);
+        }
     }
 }
